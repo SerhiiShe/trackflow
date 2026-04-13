@@ -1,23 +1,32 @@
 import { supabase } from '../../../lib/supabaseClient'
 import type { Client } from '../types'
 
+const SECONDS_IN_HOUR = 3600
+
 export const getClients = async (): Promise<Client[]> => {
-  const { data, error } = await supabase.from('clients').select('*')
+  const { data, error } = await supabase
+    .from('clients')
+    .select('*')
+    .order('created_at', { ascending: false })
   if (error) throw new Error(error.message)
-  return data
+  return data || []
 }
 
-export const createClient = async (clientData: {
+export const createClient = async (input: {
   name: string
   total_hours_limit: number
 }): Promise<Client> => {
+  const secondsLimit = input.total_hours_limit * SECONDS_IN_HOUR
+
   const { data, error } = await supabase
     .from('clients')
-    .insert([{
-      name: clientData.name,
-      total_hours_limit: clientData.total_hours_limit,
-      remaining_hours: clientData.total_hours_limit,
-    }])
+    .insert([
+      {
+        name: input.name,
+        total_hours_limit: secondsLimit,
+        remaining_hours: secondsLimit,
+      },
+    ])
     .select()
     .single()
 

@@ -1,3 +1,4 @@
+import { formatSeconds } from '../../../shared/timeFormat'
 import { useClients } from '../hooks/useClients'
 
 export const ClientList = () => {
@@ -20,7 +21,7 @@ export const ClientList = () => {
             <div className="flex justify-between text-sm">
               <span className=" text-gray-500">Support hours:</span>
               <span className="font-semibold text-gray-600">
-                {client.remaining_hours} / {client.total_hours_limit}
+                {formatSeconds(client.remaining_seconds)} / {formatSeconds(client.total_seconds_limit)}
               </span>
             </div>
           </div>
@@ -28,7 +29,7 @@ export const ClientList = () => {
           <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
             <div
               className="bg-blue-600 rounded-full h-2"
-              style={{ width: `${(client.remaining_hours / client.total_hours_limit) * 100}%` }}
+              style={{ width: `${(client.remaining_seconds / client.total_seconds_limit) * 100}%` }}
             ></div>
           </div>
         </div>
