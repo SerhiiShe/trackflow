@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useCreateClient } from '../hooks/useCreateClient'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { ClientFormProps } from '../types'
 
 const clientSchema = z.object({
   name: z.string().min(2, 'The name must be at least 2 characters long.'),
@@ -9,11 +10,6 @@ const clientSchema = z.object({
 })
 
 type ClientFormValues = z.infer<typeof clientSchema>
-
-interface ClientFormProps {
-  onSuccess: () => void
-  onCancel: () => void
-}
 
 export const ClientForm = ({ onSuccess, onCancel }: ClientFormProps) => {
   const { mutate, isPending } = useCreateClient(onSuccess)

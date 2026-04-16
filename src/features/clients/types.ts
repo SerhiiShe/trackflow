@@ -18,3 +18,8 @@ export interface CreateTaskInput {
   hours: number
   minutes: number
 }
+
+export interface ClientFormProps {
+  onSuccess: () => void
+  onCancel: () => void
+}
