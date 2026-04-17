@@ -22,7 +22,11 @@ type TaskFormValues = z.infer<typeof taskSchema>
 export const TaskForm = ({ clientId, onSuccess }: TaskFormProps) => {
   const { mutate, isPending } = useCreateTask()
 
-  const { register, handleSubmit, formState: { errors } } = useForm<TaskFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
       client_id: clientId,
@@ -35,5 +39,45 @@ export const TaskForm = ({ clientId, onSuccess }: TaskFormProps) => {
     mutate(data)
   }
 
-  return <form onSubmit={handleSubmit(onSubmit)}></form>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Task name</label>
+        <input
+          {...register('title')}
+          className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Header bug fixing"
+        />
+        {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+      </div>
+
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Hours</label>
+          <input
+            type="number"
+            {...(register('hours'), { valueAsNumber: true })}
+            className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Minutes</label>
+          <input
+            type="number"
+            {...(register('minutes'), { valueAsNumber: true })}
+            className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        {errors.hours && <p className="text-red-500 text-sm mt-1">{errors.hours.message}</p>}
+      </div>
+
+      <button
+        type="submit"
+        disabled={isPending}
+        className="px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+      >
+        {isPending ? 'Please wait...' : 'Save'}
+      </button>
+    </form>
+  )
 }

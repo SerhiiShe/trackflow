@@ -11,14 +11,6 @@ export interface CreateClientInput {
   total_hours_limit: number
 }
 
-export interface CreateTaskInput {
-  client_id: string
-  title: string
-  description: string
-  hours: number
-  minutes: number
-}
-
 export interface ClientFormProps {
   onSuccess: () => void
   onCancel: () => void
