@@ -8,5 +8,5 @@ export const formatSeconds = (totalSeconds: number) => {
   if (minutes > 0) parts.push(`${minutes}m`)
   if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`)
 
-  return parts.join(' ')
+  return parts.join('')
 }

@@ -2,14 +2,18 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useCreateClient } from '../hooks/useCreateClient'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { ClientFormProps } from '../types'
 
 const clientSchema = z.object({
-  name: z.string().min(2, 'The name must be at least 2 characters long.'),
+  name: z.string().min(2, 'The name must be at least 2 characters long'),
   total_hours_limit: z.number({ message: 'Enter the number' }).min(1, 'Minimum 1 hour'),
 })
 
 type ClientFormValues = z.infer<typeof clientSchema>
+
+export interface ClientFormProps {
+  onSuccess: () => void
+  onCancel: () => void
+}
 
 export const ClientForm = ({ onSuccess, onCancel }: ClientFormProps) => {
   const { mutate, isPending } = useCreateClient(onSuccess)
@@ -54,14 +58,14 @@ export const ClientForm = ({ onSuccess, onCancel }: ClientFormProps) => {
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+          className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isPending}
-          className="px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+          className="cursor-pointer px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
         >
           {isPending ? 'Please wait...' : 'Save'}
         </button>

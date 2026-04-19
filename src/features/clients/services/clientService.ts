@@ -23,8 +23,8 @@ export const createClient = async (input: {
     .insert([
       {
         name: input.name,
-        total_hours_limit: secondsLimit,
-        remaining_hours: secondsLimit,
+        total_seconds_limit: secondsLimit,
+        remaining_seconds: secondsLimit,
       },
     ])
     .select()

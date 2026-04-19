@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { ClientList } from '../features/clients/components/ClientList'
 import { ClientForm } from '../features/clients/components/ClientForm'
+import { TaskForm } from '../features/tasks/components/TaskForm'
 
 export const ClientsPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isClientModalOpen, setIsClientModalOpen] = useState(false)
+
+  const [taskLogClientId, setTaskLogClientId] = useState<string | null>(null)
 
   return (
     <main className="container mx-auto py-10 px-4">
@@ -14,26 +17,43 @@ export const ClientsPage = () => {
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          onClick={() => setIsClientModalOpen(true)}
+          className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           + New client
         </button>
       </header>
 
-      <ClientList />
+      <ClientList onLogTimeClick={(id) => setTaskLogClientId(id)} />
 
-      {isModalOpen && (
+      {taskLogClientId && (
         <div
-          onClick={(e) => e.target === e.currentTarget && setIsModalOpen(false)}
+          onClick={(e) => e.target === e.currentTarget && setTaskLogClientId(null)}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+        >
+          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
+            <h2 className="text-lg font-bold mb-4">Add a new client</h2>
+
+            <TaskForm
+              clientId={taskLogClientId}
+              onSuccess={() => setTaskLogClientId(null)}
+              onCancel={() => setTaskLogClientId(null)}
+            />
+          </div>
+        </div>
+      )}
+
+      {isClientModalOpen && (
+        <div
+          onClick={(e) => e.target === e.currentTarget && setIsClientModalOpen(false)}
           className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
         >
           <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
             <h2 className="text-lg font-bold mb-4">Add a new client</h2>
 
             <ClientForm
-              onSuccess={() => setIsModalOpen(false)}
-              onCancel={() => setIsModalOpen(false)}
+              onSuccess={() => setIsClientModalOpen(false)}
+              onCancel={() => setIsClientModalOpen(false)}
             />
           </div>
         </div>

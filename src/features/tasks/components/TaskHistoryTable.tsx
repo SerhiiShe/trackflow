@@ -1,0 +1,53 @@
+import { useTasks } from '../hooks/useTasks'
+import { formatSeconds } from '../../../shared/timeFormat'
+
+export const TaskHistoryTable = () => {
+  const { data: tasks, isLoading, error } = useTasks()
+
+  if (isLoading) return <div className="p-4">Loading...</div>
+  if (error) return <div className="p-4 text-red-500">{(error as Error).message}</div>
+  if (!tasks?.length) return <div className="p-4 text-gray-500">The history is empty</div>
+
+  return (
+    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+      <table className="w-full text-sm text-left text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
+          <tr>
+            <th className="px-6 py-4">Date</th>
+            <th className="px-6 py-4">Client</th>
+            <th className="px-6 py-4">Task</th>
+            <th className="px-6 py-4">Description</th>
+            <th className="px-6 py-4 text-right">Time spent</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task) => (
+            <tr key={task.id} className="bg-white border-b hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap">
+                {new Date(task.created_at).toLocaleDateString('de-CH', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </td>
+              <td className='px-6 py-4 font-medium text-gray-900'>
+                {task.clients?.name || 'Deleted client'}
+              </td>
+              <td className='px-6 py-4 font-medium text-gray-900'>
+                {task.title}
+              </td>
+              <td className='px-6 py-4 max-w-xs truncate' title={task.description || '—'}>
+                {task.description || '—'}
+              </td>
+              <td className='px-6 py-4 text-right font-semibold text-blue-600'>
+                {formatSeconds(task.time_spent_seconds)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
