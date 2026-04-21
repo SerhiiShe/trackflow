@@ -55,6 +55,18 @@ export const TaskForm = ({ clientId, onSuccess, onCancel }: TaskFormProps) => {
         />
         {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
       </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+        <textarea
+          {...register('description')}
+          rows={2}
+          className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 resize-none"
+          placeholder="Link bug in the navbar menu"
+        />
+        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
+      </div>
+
       <div>
         <div className="flex gap-4">
           <div className="flex-1">
