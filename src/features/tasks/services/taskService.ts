@@ -30,3 +30,9 @@ export const getTaskLogs = async () => {
   if (error) throw new Error(error.message)
   return data as TaskLog[]
 }
+
+export const deleteTaskLog = async (taskId: string) => {
+  const { error } = await supabase.from('task_logs').delete().eq('id', taskId)
+
+  if (error) throw new Error(error.message)
+}
