@@ -1,5 +1,5 @@
 import { supabase } from '../../../lib/supabaseClient'
-import type { Client } from '../types'
+import type { Client, CreateClientInput } from '../types'
 
 const SECONDS_IN_HOUR = 3600
 
@@ -12,10 +12,7 @@ export const getClients = async (): Promise<Client[]> => {
   return data || []
 }
 
-export const createClient = async (input: {
-  name: string
-  total_hours_limit: number
-}): Promise<Client> => {
+export const createClient = async (input: CreateClientInput): Promise<Client> => {
   const secondsLimit = input.total_hours_limit * SECONDS_IN_HOUR
 
   const { data, error } = await supabase

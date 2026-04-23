@@ -59,7 +59,7 @@ export const TaskHistoryTable = () => {
                 <button
                   onClick={() => handleDelete(task.id)}
                   disabled={isDeleting}
-                  className="text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
+                  className="cursor-pointer text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
                   title="Delete entry"
                 >
                   Delete

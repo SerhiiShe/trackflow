@@ -28,7 +28,7 @@ export const ClientsPage = () => {
 
       {taskLogClientId && (
         <div
-          onClick={(e) => e.target === e.currentTarget && setTaskLogClientId(null)}
+          onMouseDown={(e) => e.target === e.currentTarget && setTaskLogClientId(null)}
           className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
         >
           <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
@@ -45,7 +45,7 @@ export const ClientsPage = () => {
 
       {isClientModalOpen && (
         <div
-          onClick={(e) => e.target === e.currentTarget && setIsClientModalOpen(false)}
+          onMouseDown={(e) => e.target === e.currentTarget && setIsClientModalOpen(false)}
           className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
         >
           <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
