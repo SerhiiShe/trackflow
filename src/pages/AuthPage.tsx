@@ -25,7 +25,7 @@ export const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-md border border-gray-100">
         <div className="text-center mb-8">
-          <h1 className="font-bold text-2xl text-blue-600 mr-4 italic">trackflow</h1>
+          <h1 className="font-bold text-2xl text-blue-600 italic">trackflow</h1>
           <h2 className="text-lg text-gray-600">Login</h2>
         </div>
 

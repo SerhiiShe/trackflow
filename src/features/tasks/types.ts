@@ -16,4 +16,8 @@ export interface TaskLog {
   clients?: {
     name: string
   } | null
+  profiles?: {
+    email: string
+    full_name: string
+  } | null
 }

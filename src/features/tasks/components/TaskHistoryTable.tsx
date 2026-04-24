@@ -27,6 +27,7 @@ export const TaskHistoryTable = () => {
           <tr>
             <th className="px-6 py-4">Date</th>
             <th className="px-6 py-4">Client</th>
+            <th className="px-6 py-4">User</th>
             <th className="px-6 py-4">Task</th>
             <th className="px-6 py-4">Description</th>
             <th className="px-6 py-4 text-right">Time spent</th>
@@ -47,6 +48,9 @@ export const TaskHistoryTable = () => {
               </td>
               <td className="px-6 py-4 font-medium text-gray-900">
                 {task.clients?.name || 'Deleted client'}
+              </td>
+              <td className="px-6 py-4 font-medium text-gray-900">
+                {task.profiles?.full_name || task.profiles?.email || '—'}
               </td>
               <td className="px-6 py-4 font-medium text-gray-900">{task.title}</td>
               <td className="px-6 py-4 max-w-xs truncate" title={task.description || '—'}>
