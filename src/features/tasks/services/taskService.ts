@@ -9,6 +9,7 @@ export const logTask = async (input: CreateTaskInput) => {
     .insert([
       {
         client_id: input.client_id,
+        user_id: input.user_id,
         title: input.title,
         description: input.description,
         time_spent_seconds: totalSeconds,

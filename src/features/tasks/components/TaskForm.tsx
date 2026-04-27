@@ -2,10 +2,13 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCreateTask } from '../hooks/useCreateTask'
+import { useProfiles } from '../../profiles/hooks/useProfiles'
+import { useAuthStore } from '../../auth/store/authStore'
 
 const taskSchema = z
   .object({
     client_id: z.uuid('Select a client'),
+    user_id: z.uuid('Select an assignee'),
     title: z.string().min(3, 'Write what was done'),
     description: z.string().optional(),
     hours: z.number().min(0),
@@ -26,6 +29,8 @@ export interface TaskFormProps {
 
 export const TaskForm = ({ clientId, onSuccess, onCancel }: TaskFormProps) => {
   const { mutate, isPending } = useCreateTask(onSuccess)
+  const { data: profiles, isLoading: isLoadingProfiles  } = useProfiles()
+  const { user } = useAuthStore()
 
   const {
     register,
@@ -46,6 +51,17 @@ export const TaskForm = ({ clientId, onSuccess, onCancel }: TaskFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="">
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Assignee</label>
+        <select {...register('user_id')} className='w-full p-2 border rounded bg-white' disabled={isLoadingProfiles}>
+          {profiles?.map(profile => (
+            <option key={profile.id} value={profile.id} selected={user?.id === profile.id}>{profile.full_name || profile.email}</option>
+          )
+          )}
+        </select>
+        {errors.user_id && <p className="text-red-500 text-sm mt-1">{errors.user_id.message}</p>}
+      </div>
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Task name</label>
         <input

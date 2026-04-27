@@ -1,5 +1,6 @@
 export interface CreateTaskInput {
   client_id: string
+  user_id: string
   title: string
   hours: number
   minutes: number
