@@ -4,10 +4,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useCreateTask } from '../hooks/useCreateTask'
 import { useProfiles } from '../../profiles/hooks/useProfiles'
 import { useAuthStore } from '../../auth/store/authStore'
+import { useUpdateTask } from '../hooks/useUpdateTask'
+import type { CreateTaskInput } from '../types'
 
 const taskSchema = z
   .object({
-    client_id: z.uuid('Select a client'),
+    project_id: z.uuid('Select a project'),
     user_id: z.uuid('Select an assignee'),
     title: z.string().min(3, 'Write what was done'),
     description: z.string().optional(),
@@ -22,15 +24,20 @@ const taskSchema = z
 type TaskFormValues = z.infer<typeof taskSchema>
 
 export interface TaskFormProps {
-  clientId: string
+  projectId: string
+  taskId?: string
+  initialData?: CreateTaskInput
   onSuccess: () => void
   onCancel: () => void
 }
 
-export const TaskForm = ({ clientId, onSuccess, onCancel }: TaskFormProps) => {
-  const { mutate, isPending } = useCreateTask(onSuccess)
+export const TaskForm = ({ projectId, taskId, initialData, onSuccess, onCancel }: TaskFormProps) => {
+  const { mutate: createMutate, isPending: isCreating } = useCreateTask(onSuccess)
+  const { mutate: updateMutate, isPending: isUpdating } = useUpdateTask(onSuccess)
   const { data: profiles, isLoading: isLoadingProfiles  } = useProfiles()
   const { user } = useAuthStore()
+
+  const isEditMode = !!taskId
 
   const {
     register,
@@ -38,15 +45,20 @@ export const TaskForm = ({ clientId, onSuccess, onCancel }: TaskFormProps) => {
     formState: { errors },
   } = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
-    defaultValues: {
-      client_id: clientId,
+    defaultValues: initialData || {
+      project_id: projectId,
+      user_id: user?.id,
       hours: 0,
       minutes: 0,
     },
   })
 
   const onSubmit = (data: TaskFormValues) => {
-    mutate(data)
+    if (isEditMode) {
+      updateMutate({ taskId, data })
+    } else {
+      createMutate(data)
+    }
   }
 
   return (
@@ -55,7 +67,7 @@ export const TaskForm = ({ clientId, onSuccess, onCancel }: TaskFormProps) => {
         <label className='block text-sm font-medium text-gray-700 mb-1'>Assignee</label>
         <select {...register('user_id')} className='w-full p-2 border rounded bg-white' disabled={isLoadingProfiles}>
           {profiles?.map(profile => (
-            <option key={profile.id} value={profile.id} selected={user?.id === profile.id}>{profile.full_name || profile.email}</option>
+            <option key={profile.id} value={profile.id}>{profile.full_name || profile.email}</option>
           )
           )}
         </select>
@@ -115,10 +127,10 @@ export const TaskForm = ({ clientId, onSuccess, onCancel }: TaskFormProps) => {
         </button>
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isCreating || isUpdating}
           className="cursor-pointer px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
         >
-          {isPending ? 'Please wait...' : 'Save'}
+          {isCreating || isUpdating ? 'Please wait...' : 'Save'}
         </button>
       </div>
     </form>

@@ -1,15 +1,20 @@
 import { useTasks } from '../hooks/useTasks'
 import { formatSeconds } from '../../../shared/timeFormat'
 import { useDeleteTask } from '../hooks/useDeleteTask'
+import type { TaskLog } from '../types'
 
-export const TaskHistoryTable = () => {
+interface TaskHistoryTableProps {
+  onEditClick: (task: TaskLog) => void
+}
+
+export const TaskHistoryTable = ({ onEditClick }: TaskHistoryTableProps) => {
   const { data: tasks, isLoading, error } = useTasks()
   const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask()
 
   const handleDelete = (taskId: string) => {
     if (
       window.confirm(
-        'Are you sure you want to delete this entry? The time will be returned to the client.',
+        'Are you sure you want to delete this entry? The time will be returned to the project.',
       )
     ) {
       deleteTask(taskId)
@@ -26,7 +31,7 @@ export const TaskHistoryTable = () => {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
           <tr>
             <th className="px-6 py-4">Date</th>
-            <th className="px-6 py-4">Client</th>
+            <th className="px-6 py-4">Project</th>
             <th className="px-6 py-4">User</th>
             <th className="px-6 py-4">Task</th>
             <th className="px-6 py-4">Description</th>
@@ -47,7 +52,7 @@ export const TaskHistoryTable = () => {
                 })}
               </td>
               <td className="px-6 py-4 font-medium text-gray-900">
-                {task.clients?.name || 'Deleted client'}
+                {task.projects?.name || 'Deleted project'}
               </td>
               <td className="px-6 py-4 font-medium text-gray-900">
                 {task.profiles?.full_name || task.profiles?.email || '—'}
@@ -59,11 +64,20 @@ export const TaskHistoryTable = () => {
               <td className="px-6 py-4 text-right font-semibold text-blue-600">
                 {formatSeconds(task.time_spent_seconds)}
               </td>
-              <td className="px-6 py-4 text-center whitespace-nowrap">
+              <td className="px-6 py-4 text-center whitespace-nowrap space-x-4">
+                <button
+                  onClick={() => onEditClick(task)}
+                  disabled={isDeleting}
+                  className="cursor-pointer text-blue-500 hover:text-blue-700 transition-colors disabled:opacity-50"
+                  title="Delete entry"
+                >
+                  Edit
+                </button>
+
                 <button
                   onClick={() => handleDelete(task.id)}
                   disabled={isDeleting}
-                  className="cursor-pointer text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
+                  className="cursor-pointer text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
                   title="Delete entry"
                 >
                   Delete

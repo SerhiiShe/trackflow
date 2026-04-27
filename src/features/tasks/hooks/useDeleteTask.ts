@@ -8,7 +8,7 @@ export const useDeleteTask = () => {
     mutationFn: deleteTaskLog,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['task_logs'] })
-      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
     }
   })
 }

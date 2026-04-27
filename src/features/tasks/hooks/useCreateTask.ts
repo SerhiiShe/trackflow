@@ -7,7 +7,7 @@ export const useCreateTask = (onSuccessCallback?: () => void) => {
   return useMutation({
     mutationFn: logTask,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
       queryClient.invalidateQueries({ queryKey: ['task_logs'] })
 
       if (onSuccessCallback) {

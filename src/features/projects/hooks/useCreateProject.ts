@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createClient } from '../services/clientService'
+import { createProject } from '../services/projectService'
 
-export const useCreateClient = (onSuccessCallback?: () => void) => {
+export const useCreateProject = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: createClient,
+    mutationFn: createProject,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
 
       if (onSuccessCallback) {
         onSuccessCallback()

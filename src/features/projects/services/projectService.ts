@@ -1,22 +1,22 @@
 import { supabase } from '../../../lib/supabaseClient'
-import type { Client, CreateClientInput } from '../types'
+import type { Project, CreateProjectInput } from '../types'
 
 const SECONDS_IN_HOUR = 3600
 
-export const getClients = async (): Promise<Client[]> => {
+export const getProjects = async (): Promise<Project[]> => {
   const { data, error } = await supabase
-    .from('clients')
+    .from('projects')
     .select('*')
     .order('created_at', { ascending: false })
   if (error) throw new Error(error.message)
   return data || []
 }
 
-export const createClient = async (input: CreateClientInput): Promise<Client> => {
+export const createProject = async (input: CreateProjectInput): Promise<Project> => {
   const secondsLimit = input.total_hours_limit * SECONDS_IN_HOUR
 
   const { data, error } = await supabase
-    .from('clients')
+    .from('projects')
     .insert([
       {
         name: input.name,

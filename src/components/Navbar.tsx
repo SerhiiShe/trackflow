@@ -18,7 +18,7 @@ export const Navbar = () => {
             to="/"
             className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === '/' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
           >
-            Clients
+            Projects
           </Link>
           <Link
             to="/history"

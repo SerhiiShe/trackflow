@@ -1,30 +1,30 @@
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useCreateClient } from '../hooks/useCreateClient'
+import { useCreateProject } from '../hooks/useCreateProject'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-const clientSchema = z.object({
+const projectSchema = z.object({
   name: z.string().min(2, 'The name must be at least 2 characters long'),
   total_hours_limit: z.number({ message: 'Enter the number' }).min(1, 'Minimum 1 hour'),
 })
 
-type ClientFormValues = z.infer<typeof clientSchema>
+type ProjectFormValues = z.infer<typeof projectSchema>
 
-export interface ClientFormProps {
+export interface ProjectFormProps {
   onSuccess: () => void
   onCancel: () => void
 }
 
-export const ClientForm = ({ onSuccess, onCancel }: ClientFormProps) => {
-  const { mutate, isPending } = useCreateClient(onSuccess)
+export const ProjectForm = ({ onSuccess, onCancel }: ProjectFormProps) => {
+  const { mutate, isPending } = useCreateProject(onSuccess)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ClientFormValues>({ resolver: zodResolver(clientSchema) })
+  } = useForm<ProjectFormValues>({ resolver: zodResolver(projectSchema) })
 
-  const onSubmit = (data: ClientFormValues) => {
+  const onSubmit = (data: ProjectFormValues) => {
     mutate(data)
   }
 

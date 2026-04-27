@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ClientsPage } from '../pages/ClientsPage'
+import { ProjectsPage } from '../pages/ProjectsPage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { TaskHistoryPage } from '../pages/TaskHistoryPage'
 import { Navbar } from '../components/Navbar'
@@ -47,7 +47,7 @@ export const App = () => {
             </Route>
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<ClientsPage />} />
+              <Route path="/" element={<ProjectsPage />} />
               <Route path="/history" element={<TaskHistoryPage />} />
             </Route>
           </Routes>

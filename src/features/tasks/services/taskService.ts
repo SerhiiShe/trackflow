@@ -8,7 +8,7 @@ export const logTask = async (input: CreateTaskInput) => {
     .from('task_logs')
     .insert([
       {
-        client_id: input.client_id,
+        project_id: input.project_id,
         user_id: input.user_id,
         title: input.title,
         description: input.description,
@@ -25,7 +25,7 @@ export const logTask = async (input: CreateTaskInput) => {
 export const getTaskLogs = async () => {
   const { data, error } = await supabase
     .from('task_logs')
-    .select('*, clients(name), profiles(full_name, email)')
+    .select('*, projects(name), profiles(full_name, email)')
     .order('created_at', { ascending: false })
 
   if (error) throw new Error(error.message)
@@ -36,4 +36,24 @@ export const deleteTaskLog = async (taskId: string) => {
   const { error } = await supabase.from('task_logs').delete().eq('id', taskId)
 
   if (error) throw new Error(error.message)
+}
+
+export const updateTaskLog = async (taskId: string, input: CreateTaskInput) => {
+  const totalSeconds = input.hours * 3600 + input.minutes * 60
+
+  const { data, error } = await supabase
+    .from('task_logs')
+    .update({
+      project_id: input.project_id,
+      user_id: input.user_id,
+      title: input.title,
+      description: input.description,
+      time_spent_seconds: totalSeconds,
+    })
+    .eq('id', taskId)
+    .select()
+    .single()
+
+  if (error) throw new Error(error.message)
+  return data
 }

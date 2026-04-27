@@ -1,5 +1,5 @@
 export interface CreateTaskInput {
-  client_id: string
+  project_id: string
   user_id: string
   title: string
   hours: number
@@ -9,12 +9,13 @@ export interface CreateTaskInput {
 
 export interface TaskLog {
   id: string
-  client_id: string
+  project_id: string
+  user_id: string
   title: string
   time_spent_seconds: number
   description?: string
   created_at: string
-  clients?: {
+  projects?: {
     name: string
   } | null
   profiles?: {
