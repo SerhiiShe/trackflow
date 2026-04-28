@@ -10,7 +10,7 @@ const projectSchema = z.object({
 
 type ProjectFormValues = z.infer<typeof projectSchema>
 
-export interface ProjectFormProps {
+interface ProjectFormProps {
   onSuccess: () => void
   onCancel: () => void
 }
