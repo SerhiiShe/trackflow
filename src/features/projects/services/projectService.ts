@@ -6,7 +6,7 @@ const SECONDS_IN_HOUR = 3600
 export const getProjects = async (): Promise<Project[]> => {
   const { data, error } = await supabase
     .from('projects')
-    .select('*')
+    .select('*, clients(name)')
     .order('created_at', { ascending: false })
   if (error) throw new Error(error.message)
   return data || []

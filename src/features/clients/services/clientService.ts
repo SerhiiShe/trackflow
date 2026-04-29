@@ -1,5 +1,5 @@
 import { supabase } from '../../../lib/supabaseClient'
-import type { Client } from '../types'
+import type { Client, CreateClientInput } from '../types'
 
 export const getClients = async (): Promise<Client[]> => {
   const { data, error } = await supabase.from('clients').select('*').order('name')
@@ -8,7 +8,7 @@ export const getClients = async (): Promise<Client[]> => {
   return data
 }
 
-export const createClient = async (name: string) => {
+export const createClient = async ({ name }: CreateClientInput) => {
   const { data, error } = await supabase.from('clients').insert([{ name }]).select().single()
 
   if (error) throw new Error(error.message)

@@ -3,3 +3,7 @@ export interface Client {
   name: string
   created_at: string
 }
+
+export interface CreateClientInput {
+  name: string
+}

@@ -2,10 +2,12 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useCreateProject } from '../hooks/useCreateProject'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useClient } from '../../clients/hooks/useClients'
 
 const projectSchema = z.object({
   name: z.string().min(2, 'The name must be at least 2 characters long'),
   total_hours_limit: z.number({ message: 'Enter the number' }).min(1, 'Minimum 1 hour'),
+  client_id: z.uuid('Select a client'),
 })
 
 type ProjectFormValues = z.infer<typeof projectSchema>
@@ -17,6 +19,7 @@ interface ProjectFormProps {
 
 export const ProjectForm = ({ onSuccess, onCancel }: ProjectFormProps) => {
   const { mutate, isPending } = useCreateProject(onSuccess)
+  const { data: clients, isLoading: isLoadingClients } = useClient()
 
   const {
     register,
@@ -31,19 +34,33 @@ export const ProjectForm = ({ onSuccess, onCancel }: ProjectFormProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Company name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Project name</label>
         <input
           {...register('name')}
           className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Google"
+          placeholder="Page layout"
         />
         {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Package of hours (per month)
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Client</label>
+        <select
+          {...register('client_id')}
+          className="w-full p-2 border rounded bg-white"
+          disabled={isLoadingClients}
+        >
+          {clients?.map((client) => (
+            <option key={client.id} value={client.id}>
+              {client.name}
+            </option>
+          ))}
+        </select>
+        {errors.client_id && <p className="text-red-500 text-sm mt-1">{errors.client_id.message}</p>}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Estimated time</label>
         <input
           {...register('total_hours_limit', { valueAsNumber: true })}
           className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"

@@ -31,10 +31,16 @@ export interface TaskFormProps {
   onCancel: () => void
 }
 
-export const TaskForm = ({ projectId, taskId, initialData, onSuccess, onCancel }: TaskFormProps) => {
+export const TaskForm = ({
+  projectId,
+  taskId,
+  initialData,
+  onSuccess,
+  onCancel,
+}: TaskFormProps) => {
   const { mutate: createMutate, isPending: isCreating } = useCreateTask(onSuccess)
   const { mutate: updateMutate, isPending: isUpdating } = useUpdateTask(onSuccess)
-  const { data: profiles, isLoading: isLoadingProfiles  } = useProfiles()
+  const { data: profiles, isLoading: isLoadingProfiles } = useProfiles()
   const { user } = useAuthStore()
 
   const isEditMode = !!taskId
@@ -64,12 +70,17 @@ export const TaskForm = ({ projectId, taskId, initialData, onSuccess, onCancel }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="">
-        <label className='block text-sm font-medium text-gray-700 mb-1'>Assignee</label>
-        <select {...register('user_id')} className='w-full p-2 border rounded bg-white' disabled={isLoadingProfiles}>
-          {profiles?.map(profile => (
-            <option key={profile.id} value={profile.id}>{profile.full_name || profile.email}</option>
-          )
-          )}
+        <label className="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
+        <select
+          {...register('user_id')}
+          className="w-full p-2 border rounded bg-white"
+          disabled={isLoadingProfiles}
+        >
+          {profiles?.map((profile) => (
+            <option key={profile.id} value={profile.id}>
+              {profile.full_name || profile.email}
+            </option>
+          ))}
         </select>
         {errors.user_id && <p className="text-red-500 text-sm mt-1">{errors.user_id.message}</p>}
       </div>
@@ -92,7 +103,9 @@ export const TaskForm = ({ projectId, taskId, initialData, onSuccess, onCancel }
           className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 resize-none"
           placeholder="Link bug in the navbar menu"
         />
-        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
+        {errors.description && (
+          <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+        )}
       </div>
 
       <div>
@@ -101,7 +114,7 @@ export const TaskForm = ({ projectId, taskId, initialData, onSuccess, onCancel }
             <label className="block text-sm font-medium text-gray-700 mb-1">Hours</label>
             <input
               type="number"
-              {...(register('hours', { valueAsNumber: true }))}
+              {...register('hours', { valueAsNumber: true })}
               className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -109,7 +122,7 @@ export const TaskForm = ({ projectId, taskId, initialData, onSuccess, onCancel }
             <label className="block text-sm font-medium text-gray-700 mb-1">Minutes</label>
             <input
               type="number"
-              {...(register('minutes', { valueAsNumber: true }))}
+              {...register('minutes', { valueAsNumber: true })}
               className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
