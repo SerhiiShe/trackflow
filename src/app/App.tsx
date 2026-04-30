@@ -9,6 +9,7 @@ import { supabase } from '../lib/supabaseClient'
 import { AuthPage } from '../pages/AuthPage'
 import { ProtectedRoute } from './router/ProtectedRoute'
 import { AuthRoute } from './router/AuthRoute'
+import { ClientsPage } from '../pages/ClientsPage'
 
 const queryClient = new QueryClient()
 
@@ -49,6 +50,7 @@ export const App = () => {
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<ProjectsPage />} />
               <Route path="/history" element={<TaskHistoryPage />} />
+              <Route path="/clients" element={<ClientsPage />} />
             </Route>
           </Routes>
         </div>

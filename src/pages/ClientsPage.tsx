@@ -1,9 +1,10 @@
 import { useState } from "react"
-import { TaskForm } from "../features/tasks/components/TaskForm"
-import { TaskHistoryTable } from "../features/tasks/components/TaskHistoryTable"
-import type { TaskLog } from "../features/tasks/types"
+import { ClientList } from "../features/clients/components/ClientList"
+import { ClientForm } from "../features/clients/components/ClientForm"
 
 export const ClientsPage = () => {
+  const [isClientModalOpen, setIsClientModalOpen] = useState(false)
+
   return (
     <main className="container mx-auto py-10 px-4">
       <header className="flex justify-between items-center mb-6">
@@ -11,31 +12,28 @@ export const ClientsPage = () => {
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 pb-1">Clients</h1>
           <p className="text-gray-500">List of all clients.</p>
         </div>
+        
+        <button
+          onClick={() => setIsClientModalOpen(true)}
+          className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          + New client
+        </button>
       </header>
 
-      {/* <TaskHistoryTable onEditClick={(task) => setEditingTask(task)} /> */}
+      <ClientList />
 
-      {editingTask && (
+      {isClientModalOpen && (
               <div
-                onMouseDown={(e) => e.target === e.currentTarget && setEditingTask(null)}
+                onMouseDown={(e) => e.target === e.currentTarget && setIsClientModalOpen(false)}
                 className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
               >
                 <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
-                  <h2 className="text-lg font-bold mb-4">Edit the task</h2>
+                  <h2 className="text-lg font-bold mb-4">Add a new client</h2>
       
-                  <TaskForm
-                    projectId={editingTask.project_id}
-                    taskId={editingTask.id}
-                    initialData={{
-                      project_id: editingTask.project_id,
-                      user_id: editingTask.user_id,
-                      title: editingTask.title,
-                      hours: Math.floor(Math.abs(editingTask.time_spent_seconds) / 3600),
-                      minutes: Math.floor(Math.abs(editingTask.time_spent_seconds) % 3600 / 60),
-                      description: editingTask.description,
-                    }}
-                    onSuccess={() => setEditingTask(null)}
-                    onCancel={() => setEditingTask(null)}
+                  <ClientForm
+                    onSuccess={() => setIsClientModalOpen(false)}
+                    onCancel={() => setIsClientModalOpen(false)}
                   />
                 </div>
               </div>

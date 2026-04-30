@@ -30,7 +30,7 @@ export const ClientForm = ({ onSuccess, onCancel }: ClientFormProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Company name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Client name</label>
         <input
           {...register('name')}
           className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"

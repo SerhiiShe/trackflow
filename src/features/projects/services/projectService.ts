@@ -22,6 +22,7 @@ export const createProject = async (input: CreateProjectInput): Promise<Project>
         name: input.name,
         total_seconds_limit: secondsLimit,
         remaining_seconds: secondsLimit,
+        client_id: input.client_id,
       },
     ])
     .select()

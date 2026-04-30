@@ -20,11 +20,19 @@ export const Navbar = () => {
           >
             Projects
           </Link>
+
           <Link
             to="/history"
             className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === '/history' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
           >
             Task history
+          </Link>
+
+          <Link
+            to="/clients"
+            className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === '/clients' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
+          >
+            Clients
           </Link>
         </div>
 

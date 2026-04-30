@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useCreateProject } from '../hooks/useCreateProject'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useClient } from '../../clients/hooks/useClients'
+import { useClients } from '../../clients/hooks/useClients'
 
 const projectSchema = z.object({
   name: z.string().min(2, 'The name must be at least 2 characters long'),
@@ -19,7 +19,7 @@ interface ProjectFormProps {
 
 export const ProjectForm = ({ onSuccess, onCancel }: ProjectFormProps) => {
   const { mutate, isPending } = useCreateProject(onSuccess)
-  const { data: clients, isLoading: isLoadingClients } = useClient()
+  const { data: clients, isLoading: isLoadingClients } = useClients()
 
   const {
     register,
@@ -50,17 +50,20 @@ export const ProjectForm = ({ onSuccess, onCancel }: ProjectFormProps) => {
           className="w-full p-2 border rounded bg-white"
           disabled={isLoadingClients}
         >
+          <option value="">Select a client...</option>
           {clients?.map((client) => (
             <option key={client.id} value={client.id}>
               {client.name}
             </option>
           ))}
         </select>
-        {errors.client_id && <p className="text-red-500 text-sm mt-1">{errors.client_id.message}</p>}
+        {errors.client_id && (
+          <p className="text-red-500 text-sm mt-1">{errors.client_id.message}</p>
+        )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Estimated time</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Hours</label>
         <input
           {...register('total_hours_limit', { valueAsNumber: true })}
           className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"

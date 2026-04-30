@@ -12,4 +12,5 @@ export interface Project {
 export interface CreateProjectInput {
   name: string
   total_hours_limit: number
+  client_id: string
 }

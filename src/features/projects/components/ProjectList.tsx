@@ -30,10 +30,11 @@ export const ProjectList = ({ onLogTimeClick }: ProjectListProps) => {
             className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow"
           >
             <h3 className="text-xl font-bold text-gray-800">{project.name}</h3>
+            <span className='text-sm font-medium text-gray-600'>{project.clients?.name}</span>
 
             <div className="mt-4 space-y-2">
               <div className="flex justify-between text-sm">
-                <span className=" text-gray-500">Support hours:</span>
+                <span className=" text-gray-500">Hours:</span>
                 <div className="font-semibold text-gray-600">
                   <span className={isOverlimit ? 'text-red-500' : ''}>
                     {formatSeconds(project.remaining_seconds)}
