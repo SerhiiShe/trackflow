@@ -25,7 +25,7 @@ export const logTask = async (input: CreateTaskInput) => {
 export const getTaskLogs = async () => {
   const { data, error } = await supabase
     .from('task_logs')
-    .select('*, projects(name), profiles(full_name, email)')
+    .select('*, projects(name, clients(name)), profiles(full_name, email)')
     .order('created_at', { ascending: false })
 
   if (error) throw new Error(error.message)

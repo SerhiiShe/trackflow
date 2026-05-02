@@ -32,11 +32,12 @@ export const TaskHistoryTable = ({ onEditClick }: TaskHistoryTableProps) => {
           <tr>
             <th className="px-6 py-4">Date</th>
             <th className="px-6 py-4">Project</th>
+            <th className="px-6 py-4">Client</th>
             <th className="px-6 py-4">User</th>
             <th className="px-6 py-4">Task</th>
             <th className="px-6 py-4">Description</th>
             <th className="px-6 py-4 text-right">Time spent</th>
-            <th className="px-6 py-4 text-center">Actions</th>
+            <th className="px-6 py-4 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -53,6 +54,9 @@ export const TaskHistoryTable = ({ onEditClick }: TaskHistoryTableProps) => {
               </td>
               <td className="px-6 py-4 font-medium text-gray-900">
                 {task.projects?.name || 'Deleted project'}
+              </td>
+              <td className="px-6 py-4 font-medium text-gray-900">
+                {task.projects?.clients?.name || '—'}
               </td>
               <td className="px-6 py-4 font-medium text-gray-900">
                 {task.profiles?.full_name || task.profiles?.email || '—'}

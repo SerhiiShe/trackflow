@@ -7,6 +7,7 @@ export const getProjects = async (): Promise<Project[]> => {
   const { data, error } = await supabase
     .from('projects')
     .select('*, clients(name)')
+    .eq('is_archived', false)
     .order('created_at', { ascending: false })
   if (error) throw new Error(error.message)
   return data || []
@@ -30,4 +31,13 @@ export const createProject = async (input: CreateProjectInput): Promise<Project>
 
   if (error) throw new Error(error.message)
   return data
+}
+
+export const archiveProject = async (projectId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('projects')
+    .update({ is_archived: true })
+    .eq('id', projectId)
+
+  if (error) throw new Error(error.message)
 }

@@ -17,6 +17,9 @@ export interface TaskLog {
   created_at: string
   projects?: {
     name: string
+    clients?: {
+      name: string
+    } | null
   } | null
   profiles?: {
     email: string
