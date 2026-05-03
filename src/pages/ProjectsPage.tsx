@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { ProjectList } from '../features/projects/components/ProjectList'
 import { ProjectForm } from '../features/projects/components/ProjectForm'
 import { TaskForm } from '../features/tasks/components/TaskForm'
+import type { Project } from '../features/projects/types'
 
 export const ProjectsPage = () => {
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)
-
   const [taskLogProjectId, setTaskLogProjectId] = useState<string | null>(null)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
 
   return (
     <main className="container mx-auto py-10 px-4">
@@ -24,7 +25,7 @@ export const ProjectsPage = () => {
         </button>
       </header>
 
-      <ProjectList onLogTimeClick={(id) => setTaskLogProjectId(id)} />
+      <ProjectList onLogTimeClick={(id) => setTaskLogProjectId(id)} onEditClick={(project) => setEditingProject(project)} />
 
       {taskLogProjectId && (
         <div
@@ -54,6 +55,28 @@ export const ProjectsPage = () => {
             <ProjectForm
               onSuccess={() => setIsProjectModalOpen(false)}
               onCancel={() => setIsProjectModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {editingProject && (
+        <div
+          onMouseDown={(e) => e.target === e.currentTarget && setEditingProject(null)}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+        >
+          <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6">
+            <h2 className="text-lg font-bold mb-4">Edit the project</h2>
+
+            <ProjectForm
+              projectId={editingProject.id}
+              initialData={{
+                name: editingProject.name,
+                client_id: editingProject.clients?.id || '',
+                total_hours_limit: editingProject.total_seconds_limit / 3600,
+              }}
+              onSuccess={() => setEditingProject(null)}
+              onCancel={() => setEditingProject(null)}
             />
           </div>
         </div>

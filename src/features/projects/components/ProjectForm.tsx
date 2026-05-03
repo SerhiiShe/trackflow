@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { useCreateProject } from '../hooks/useCreateProject'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useClients } from '../../clients/hooks/useClients'
+import type { CreateProjectInput } from '../types'
+import { useUpdateProject } from '../hooks/useUpdateProject'
 
 const projectSchema = z.object({
   name: z.string().min(2, 'The name must be at least 2 characters long'),
@@ -13,22 +15,34 @@ const projectSchema = z.object({
 type ProjectFormValues = z.infer<typeof projectSchema>
 
 interface ProjectFormProps {
+  projectId?: string
+  initialData?: CreateProjectInput
   onSuccess: () => void
   onCancel: () => void
 }
 
-export const ProjectForm = ({ onSuccess, onCancel }: ProjectFormProps) => {
-  const { mutate, isPending } = useCreateProject(onSuccess)
+export const ProjectForm = ({ projectId, initialData, onSuccess, onCancel }: ProjectFormProps) => {
+  const { mutate: createProject, isPending: isCreating } = useCreateProject(onSuccess)
+  const { mutate: updateProject, isPending: isUpdating } = useUpdateProject(onSuccess)
   const { data: clients, isLoading: isLoadingClients } = useClients()
+
+  const isEditMode = !!projectId
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ProjectFormValues>({ resolver: zodResolver(projectSchema) })
+  } = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectSchema),
+    defaultValues: initialData || { name: '', client_id: '', total_hours_limit: 0 },
+  })
 
   const onSubmit = (data: ProjectFormValues) => {
-    mutate(data)
+    if (isEditMode) {
+      updateProject({ projectId, data })
+    } else {
+      createProject(data)
+    }
   }
 
   return (
@@ -84,10 +98,10 @@ export const ProjectForm = ({ onSuccess, onCancel }: ProjectFormProps) => {
         </button>
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isCreating || isUpdating}
           className="cursor-pointer px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
         >
-          {isPending ? 'Please wait...' : 'Save'}
+          {isCreating || isUpdating ? 'Please wait...' : 'Save'}
         </button>
       </div>
     </form>

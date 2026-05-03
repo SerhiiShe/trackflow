@@ -6,7 +6,7 @@ const SECONDS_IN_HOUR = 3600
 export const getProjects = async (): Promise<Project[]> => {
   const { data, error } = await supabase
     .from('projects')
-    .select('*, clients(name)')
+    .select('*, clients(name, id)')
     .eq('is_archived', false)
     .order('created_at', { ascending: false })
   if (error) throw new Error(error.message)
@@ -40,4 +40,22 @@ export const archiveProject = async (projectId: string): Promise<void> => {
     .eq('id', projectId)
 
   if (error) throw new Error(error.message)
+}
+
+export const updateProject = async (projectId: string, input: CreateProjectInput) => {
+  const secondsLimit = input.total_hours_limit * 3600
+
+  const { data, error } = await supabase
+    .from('projects')
+    .update({
+      name: input.name,
+      client_id: input.client_id,
+      total_seconds_limit: secondsLimit,
+    })
+    .eq('id', projectId)
+    .select()
+    .single()
+
+  if (error) throw new Error(error.message)
+  return data
 }
