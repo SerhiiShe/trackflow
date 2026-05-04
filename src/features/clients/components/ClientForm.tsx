@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { useCreateClient } from '../hooks/useCreateClient'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { CreateClientInput } from '../types'
+import { useUpdateClient } from '../hooks/useUpdateClient'
 
 const clientSchema = z.object({
   name: z.string().min(2, 'The name must be at least 2 characters long'),
@@ -10,21 +12,33 @@ const clientSchema = z.object({
 type ClientFormValues = z.infer<typeof clientSchema>
 
 interface ClientFormProps {
+  clientId?: string
+  initialData?: CreateClientInput
   onSuccess: () => void
   onCancel: () => void
 }
 
-export const ClientForm = ({ onSuccess, onCancel }: ClientFormProps) => {
-  const { mutate, isPending } = useCreateClient(onSuccess)
+export const ClientForm = ({ clientId, initialData, onSuccess, onCancel }: ClientFormProps) => {
+  const { mutate: createClient, isPending: isCreating } = useCreateClient(onSuccess)
+  const { mutate: updateClient, isPending: isUpdating } = useUpdateClient(onSuccess)
+
+  const isEditMode = !!clientId
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ClientFormValues>({ resolver: zodResolver(clientSchema) })
+  } = useForm<ClientFormValues>({
+    resolver: zodResolver(clientSchema),
+    defaultValues: initialData || { name: '' },
+  })
 
   const onSubmit = (data: ClientFormValues) => {
-    mutate(data)
+    if (isEditMode) {
+      updateClient({ clientId, data })
+    } else {
+      createClient(data)
+    }
   }
 
   return (
@@ -49,10 +63,10 @@ export const ClientForm = ({ onSuccess, onCancel }: ClientFormProps) => {
         </button>
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isCreating || isUpdating}
           className="cursor-pointer px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
         >
-          {isPending ? 'Please wait...' : 'Save'}
+          {isCreating || isUpdating ? 'Please wait...' : 'Save'}
         </button>
       </div>
     </form>
