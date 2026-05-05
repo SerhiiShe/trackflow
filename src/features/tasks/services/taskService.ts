@@ -1,5 +1,28 @@
 import { supabase } from '../../../lib/supabaseClient'
-import type { CreateTaskInput, TaskLog } from '../../tasks/types'
+import type { CreateTaskInput, TaskFilters, TaskLog } from '../../tasks/types'
+
+const PAGE_SIZE = 20
+
+export const getTaskLogs = async ({
+  pageParam = 0,
+  search,
+  projectId,
+  clientId,
+  userId,
+  sortBy = 'date_desc',
+}: TaskFilters) => {
+  const from = pageParam * PAGE_SIZE
+  const to = from + PAGE_SIZE - 1
+
+
+  // const { data, error } = await supabase
+  //   .from('task_logs')
+  //   .select('*, projects(name, clients(name)), profiles(full_name, email)')
+  //   .order('created_at', { ascending: false })
+
+  // if (error) throw new Error(error.message)
+  // return data as TaskLog[]
+}
 
 export const logTask = async (input: CreateTaskInput) => {
   const totalSeconds = input.hours * 3600 + input.minutes * 60
@@ -20,16 +43,6 @@ export const logTask = async (input: CreateTaskInput) => {
 
   if (error) throw new Error(error.message)
   return data
-}
-
-export const getTaskLogs = async () => {
-  const { data, error } = await supabase
-    .from('task_logs')
-    .select('*, projects(name, clients(name)), profiles(full_name, email)')
-    .order('created_at', { ascending: false })
-
-  if (error) throw new Error(error.message)
-  return data as TaskLog[]
 }
 
 export const deleteTaskLog = async (taskId: string) => {

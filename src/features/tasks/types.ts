@@ -26,3 +26,12 @@ export interface TaskLog {
     full_name: string
   } | null
 }
+
+export interface TaskFilters {
+  search?: string
+  projectId?: string
+  clientId?: string
+  userId?: string
+  sortBy?: 'date_desc' | 'date_asc' | 'time_desc' | 'time_asc'
+  pageParam?: number
+}
