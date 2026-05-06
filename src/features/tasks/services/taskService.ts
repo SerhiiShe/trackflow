@@ -14,14 +14,39 @@ export const getTaskLogs = async ({
   const from = pageParam * PAGE_SIZE
   const to = from + PAGE_SIZE - 1
 
+  let query = supabase
+    .from('task_logs')
+    .select('*, projects!inner(name, client_id, clients(name)), profiles(full_name, email)', {
+      count: 'exact',
+    })
 
-  // const { data, error } = await supabase
-  //   .from('task_logs')
-  //   .select('*, projects(name, clients(name)), profiles(full_name, email)')
-  //   .order('created_at', { ascending: false })
+  if (userId) query = query.eq('user_id', userId)
+  if (projectId) query = query.eq('project_id', projectId)
+  if (clientId) query = query.eq('projects.client_id', clientId)
+  if (search) query = query.eq('title', `%${search}%`)
 
-  // if (error) throw new Error(error.message)
-  // return data as TaskLog[]
+  switch (sortBy) {
+    case 'date_asc': query = query.order('created_at', { ascending: true })
+    break
+    case 'time_desc': query = query.order('time_spent_seconds', { ascending: false })
+    break
+    case 'time_asc': query = query.order('time_spent_seconds', { ascending: true })
+    break
+    case 'date_desc':
+    default: query = query.order('created_at', { ascending: false })
+    break
+  }
+
+  query = query.range(from, to)
+
+  const { data, error, count } = await query
+
+  if (error) throw new Error(error.message)
+  return {
+    data: data as unknown as TaskLog[],
+    nextPage: data.length === PAGE_SIZE ? pageParam + 1 : undefined,
+    totalCount: count
+  }
 }
 
 export const logTask = async (input: CreateTaskInput) => {
