@@ -27,7 +27,7 @@ export const TaskHistoryTable = ({ tasks, error, isLoading, onEditClick }: TaskH
   if (!tasks?.length) return <div className="p-4 text-gray-500">No items found.</div>
 
   return (
-    <div className="max-h-[70vh] overflow-auto bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
           <tr>
