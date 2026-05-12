@@ -26,15 +26,19 @@ export const getTaskLogs = async ({
   if (search) query = query.ilike('title', `%${search}%`)
 
   switch (sortBy) {
-    case 'date_asc': query = query.order('created_at', { ascending: true })
-    break
-    case 'time_desc': query = query.order('time_spent_seconds', { ascending: false })
-    break
-    case 'time_asc': query = query.order('time_spent_seconds', { ascending: true })
-    break
+    case 'date_asc':
+      query = query.order('date', { ascending: true }).order('created_at', { ascending: true })
+      break
+    case 'time_desc':
+      query = query.order('time_spent_seconds', { ascending: false })
+      break
+    case 'time_asc':
+      query = query.order('time_spent_seconds', { ascending: true })
+      break
     case 'date_desc':
-    default: query = query.order('created_at', { ascending: false })
-    break
+    default:
+      query = query.order('date', { ascending: false }).order('created_at', { ascending: false })
+      break
   }
 
   query = query.range(from, to)
@@ -45,7 +49,7 @@ export const getTaskLogs = async ({
   return {
     data: data as unknown as TaskLog[],
     nextPage: data.length === PAGE_SIZE ? pageParam + 1 : undefined,
-    totalCount: count
+    totalCount: count,
   }
 }
 
@@ -61,6 +65,7 @@ export const logTask = async (input: CreateTaskInput) => {
         title: input.title,
         description: input.description,
         time_spent_seconds: totalSeconds,
+        date: input.date,
       },
     ])
     .select()
@@ -87,6 +92,7 @@ export const updateTaskLog = async (taskId: string, input: CreateTaskInput) => {
       title: input.title,
       description: input.description,
       time_spent_seconds: totalSeconds,
+      date: input.date,
     })
     .eq('id', taskId)
     .select()

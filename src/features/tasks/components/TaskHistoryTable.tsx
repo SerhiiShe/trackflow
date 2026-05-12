@@ -45,12 +45,10 @@ export const TaskHistoryTable = ({ tasks, error, isLoading, onEditClick }: TaskH
           {tasks.map((task) => (
             <tr key={task.id} className="bg-white border-b hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">
-                {new Date(task.created_at).toLocaleDateString('de-CH', {
+                {new Date(task.date).toLocaleDateString('de-CH', {
                   day: '2-digit',
                   month: 'short',
                   year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
                 })}
               </td>
               <td className="px-6 py-4 font-medium text-gray-900">{task.title}</td>

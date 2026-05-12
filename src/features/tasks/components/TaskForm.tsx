@@ -15,6 +15,7 @@ const taskSchema = z
     description: z.string().optional(),
     hours: z.number().min(0),
     minutes: z.number().min(0).max(59, 'Maximum 59 minutes'),
+    date: z.string().min(1, 'Select date'),
   })
   .refine((data) => data.hours > 0 || data.minutes > 0, {
     message: 'Time cannot be zero',
@@ -45,6 +46,8 @@ export const TaskForm = ({
 
   const isEditMode = !!taskId
 
+  const today = new Date().toISOString().split('T')[0]
+
   const {
     register,
     handleSubmit,
@@ -56,6 +59,7 @@ export const TaskForm = ({
       user_id: user?.id,
       hours: 0,
       minutes: 0,
+      date: today,
     },
   })
 
@@ -106,6 +110,16 @@ export const TaskForm = ({
         {errors.description && (
           <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
         )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+        <input
+          type="date"
+          {...register('date')}
+          className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+        />
+        {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>}
       </div>
 
       <div>

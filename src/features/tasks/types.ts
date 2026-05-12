@@ -5,6 +5,7 @@ export interface CreateTaskInput {
   hours: number
   minutes: number
   description?: string
+  date: string
 }
 
 export interface TaskLog {
@@ -14,6 +15,7 @@ export interface TaskLog {
   title: string
   time_spent_seconds: number
   description?: string
+  date: string
   created_at: string
   projects?: {
     name: string

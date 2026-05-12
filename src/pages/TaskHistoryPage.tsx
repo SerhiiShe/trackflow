@@ -71,6 +71,7 @@ export const TaskHistoryPage = () => {
                 hours: Math.floor(Math.abs(editingTask.time_spent_seconds) / 3600),
                 minutes: Math.floor((Math.abs(editingTask.time_spent_seconds) % 3600) / 60),
                 description: editingTask.description,
+                date: editingTask.date,
               }}
               onSuccess={() => setEditingTask(null)}
               onCancel={() => setEditingTask(null)}
