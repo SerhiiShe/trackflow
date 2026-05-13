@@ -1,4 +1,4 @@
-import { formatSeconds } from '../../../shared/timeFormat'
+import { formatSeconds } from '../../../utils/timeFormat'
 import { useDeleteTask } from '../hooks/useDeleteTask'
 import type { TaskLog } from '../types'
 
@@ -35,7 +35,7 @@ export const TaskHistoryTable = ({ tasks, error, isLoading, onEditClick }: TaskH
             <th className="px-6 py-4">Task</th>
             <th className="px-6 py-4">Project</th>
             <th className="px-6 py-4">Client</th>
-            <th className="px-6 py-4">User</th>
+            <th className="px-6 py-4">Assignee</th>
             <th className="px-6 py-4">Description</th>
             <th className="px-6 py-4 text-right">Time spent</th>
             <th className="px-6 py-4 text-right">Actions</th>
@@ -47,7 +47,7 @@ export const TaskHistoryTable = ({ tasks, error, isLoading, onEditClick }: TaskH
               <td className="px-6 py-4 whitespace-nowrap">
                 {new Date(task.date).toLocaleDateString('de-CH', {
                   day: '2-digit',
-                  month: 'short',
+                  month: '2-digit',
                   year: 'numeric',
                 })}
               </td>

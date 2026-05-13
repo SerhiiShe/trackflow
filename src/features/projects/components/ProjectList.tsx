@@ -1,4 +1,4 @@
-import { formatSeconds } from '../../../shared/timeFormat'
+import { formatSeconds } from '../../../utils/timeFormat'
 import { useArchiveProject } from '../hooks/useArchiveProject'
 import { useProjects } from '../hooks/useProjects'
 import type { Project } from '../types'

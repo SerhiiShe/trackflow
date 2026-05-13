@@ -4,9 +4,12 @@ import { TaskHistoryTable } from '../features/tasks/components/TaskHistoryTable'
 import type { TaskFilters, TaskLog } from '../features/tasks/types'
 import { useTasks } from '../features/tasks/hooks/useTasks'
 import { TaskFiltersPanel } from '../features/tasks/components/TaskFiltersPanel'
+import { exportTaskLogs } from '../features/tasks/services/taskService'
+import { downloadTaskLogsCSV } from '../utils/csvExport'
 
 export const TaskHistoryPage = () => {
   const [editingTask, setEditingTask] = useState<TaskLog | null>(null)
+  const [isExporting, setIsExporting] = useState(false)
 
   const [filters, setFilters] = useState<Omit<TaskFilters, 'pageParam'>>({
     sortBy: 'date_desc',
@@ -23,6 +26,25 @@ export const TaskHistoryPage = () => {
 
   const tasks = data?.pages.flatMap((page) => page.data || [])
 
+  const handleExport = async () => {
+    try {
+      setIsExporting(true)
+
+      const allMatchingTasks = await exportTaskLogs(debouncedFilters)
+
+      if (allMatchingTasks.length === 0) {
+        alert('No data to download.')
+        return
+      }
+
+      downloadTaskLogsCSV(allMatchingTasks)
+    } catch (error: any) {
+      alert(`Error while uploading: ${error.message}`)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   return (
     <main className="container mx-auto py-10 px-4">
       <header className="flex justify-between items-center mb-6">
@@ -30,6 +52,36 @@ export const TaskHistoryPage = () => {
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 pb-1">History</h1>
           <p className="text-gray-500">All completed tasks and time spent.</p>
         </div>
+
+        <button
+          onClick={handleExport}
+          disabled={isExporting}
+          // className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+          className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+        >
+          {isExporting ? (
+            <span>Preparing data...</span>
+          ) : (
+            <span className='flex items-center gap-2'>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export CSV
+            </span>
+          )}
+        </button>
       </header>
 
       <TaskFiltersPanel filters={filters} onChange={setFilters} />
