@@ -11,7 +11,7 @@ export const ProjectsPage = () => {
 
   return (
     <main className="container mx-auto py-10 px-4">
-      <header className="flex justify-between items-center flex-wrap mb-6">
+      <header className="flex justify-between items-center flex-wrap gap-x-6 gap-y-3 mb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 pb-1">Projects</h1>
           <p className="text-gray-500">Projects and hours management.</p>

@@ -47,7 +47,7 @@ export const TaskHistoryPage = () => {
 
   return (
     <main className="container mx-auto py-10 px-4">
-      <header className="flex justify-between items-center flex-wrap mb-6">
+      <header className="flex justify-between items-center flex-wrap gap-x-6 gap-y-3 mb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 pb-1">History</h1>
           <p className="text-gray-500">All completed tasks and time spent.</p>
@@ -56,7 +56,6 @@ export const TaskHistoryPage = () => {
         <button
           onClick={handleExport}
           disabled={isExporting}
-          // className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
           className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
         >
           {isExporting ? (
