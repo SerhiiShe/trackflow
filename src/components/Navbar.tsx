@@ -9,7 +9,6 @@ export const Navbar = () => {
 
   const { data: profiles } = useProfiles()
   const currentProfile = profiles?.find((p) => p.id === user?.id)
-  console.log(currentProfile)
 
   const initials = currentProfile?.full_name
     ? currentProfile.full_name.substring(0, 2).toUpperCase()

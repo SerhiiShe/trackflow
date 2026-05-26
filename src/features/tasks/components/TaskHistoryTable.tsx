@@ -27,7 +27,7 @@ export const TaskHistoryTable = ({ tasks, error, isLoading, onEditClick }: TaskH
   if (!tasks?.length) return <div className="p-4 text-gray-500">No items found.</div>
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-auto max-h-[70vh]">
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
           <tr>
@@ -43,7 +43,7 @@ export const TaskHistoryTable = ({ tasks, error, isLoading, onEditClick }: TaskH
         </thead>
         <tbody>
           {tasks.map((task) => (
-            <TaskHistoryTableRow task={task} onDeleteClick={(taskId) => handleDelete(taskId)} isDeleting={isDeleting} onEditClick={() => onEditClick(task)} />
+            <TaskHistoryTableRow key={task.id} task={task} onDeleteClick={(taskId) => handleDelete(taskId)} isDeleting={isDeleting} onEditClick={() => onEditClick(task)} />
           ))}
         </tbody>
       </table>

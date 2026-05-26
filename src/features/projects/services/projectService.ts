@@ -51,6 +51,7 @@ export const updateProject = async (projectId: string, input: CreateProjectInput
       name: input.name,
       client_id: input.client_id,
       total_seconds_limit: secondsLimit,
+      status: input.status,
     })
     .eq('id', projectId)
     .select()

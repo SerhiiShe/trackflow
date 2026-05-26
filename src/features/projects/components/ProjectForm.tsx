@@ -10,6 +10,7 @@ const projectSchema = z.object({
   name: z.string().min(2, 'The name must be at least 2 characters long'),
   total_hours_limit: z.number({ message: 'Enter the number' }).min(1, 'Minimum 1 hour'),
   client_id: z.uuid('Select a client'),
+  status: z.enum(['Ongoing', 'Finished']),
 })
 
 type ProjectFormValues = z.infer<typeof projectSchema>
@@ -34,7 +35,12 @@ export const ProjectForm = ({ projectId, initialData, onSuccess, onCancel }: Pro
     formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
-    defaultValues: initialData || { name: '', client_id: '', total_hours_limit: 0 },
+    defaultValues: initialData || {
+      name: '',
+      client_id: '',
+      total_hours_limit: 0,
+      status: 'Ongoing',
+    },
   })
 
   const onSubmit = (data: ProjectFormValues) => {
@@ -73,6 +79,20 @@ export const ProjectForm = ({ projectId, initialData, onSuccess, onCancel }: Pro
         </select>
         {errors.client_id && (
           <p className="text-red-500 text-sm mt-1">{errors.client_id.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+        <select
+          {...register('status')}
+          className="w-full p-2 border rounded bg-white"
+        >
+          <option value="Ongoing">Ongoing</option>
+          <option value="Finished">Finished</option>
+        </select>
+        {errors.status && (
+          <p className="text-red-500 text-sm mt-1">{errors.status.message}</p>
         )}
       </div>
 

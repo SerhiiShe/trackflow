@@ -6,10 +6,12 @@ import { useTasks } from '../features/tasks/hooks/useTasks'
 import { TaskFiltersPanel } from '../features/tasks/components/TaskFiltersPanel'
 import { exportTaskLogs } from '../features/tasks/services/taskService'
 import { downloadTaskLogsCSV } from '../utils/csvExport'
+import type { Project } from '../features/projects/types'
 
 export const TaskHistoryPage = () => {
   const [editingTask, setEditingTask] = useState<TaskLog | null>(null)
   const [isExporting, setIsExporting] = useState(false)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   const [filters, setFilters] = useState<Omit<TaskFilters, 'pageParam'>>({
     sortBy: 'date_desc',
@@ -37,7 +39,7 @@ export const TaskHistoryPage = () => {
         return
       }
 
-      downloadTaskLogsCSV(allMatchingTasks)
+      downloadTaskLogsCSV(allMatchingTasks, selectedProject)
     } catch (error: any) {
       alert(`Error while uploading: ${error.message}`)
     } finally {
@@ -83,7 +85,7 @@ export const TaskHistoryPage = () => {
         </button>
       </header>
 
-      <TaskFiltersPanel filters={filters} onChange={setFilters} />
+      <TaskFiltersPanel filters={filters} onChange={setFilters} onProjectChange={(project) => setSelectedProject(project)} />
 
       <TaskHistoryTable
         tasks={tasks}

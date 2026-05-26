@@ -4,13 +4,16 @@ import { useProjects } from '../hooks/useProjects'
 import type { Project } from '../types'
 
 interface ProjectListProps {
+  showFinished: boolean
   onLogTimeClick: (projectId: string) => void
   onEditClick: (project: Project) => void
 }
 
-export const ProjectList = ({ onLogTimeClick, onEditClick }: ProjectListProps) => {
+export const ProjectList = ({ showFinished, onLogTimeClick, onEditClick }: ProjectListProps) => {
   const { data: projects, isLoading, error } = useProjects()
   const { mutate: archiveProject, isPending: isArchiving } = useArchiveProject()
+
+  const filteredProjects = projects?.filter(p => showFinished ? true : p.status !== 'Finished')
 
   const handleArchive = (id: string, name: string) => {
     if (window.confirm(`Move project "${name}" to archive?`)) {
@@ -24,8 +27,9 @@ export const ProjectList = ({ onLogTimeClick, onEditClick }: ProjectListProps) =
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {projects?.map((project) => {
+      {filteredProjects?.map((project) => {
         const isOverlimit = project.remaining_seconds < 0
+        const isFinished = project.status === 'Finished'
 
         const progressPercentage =
           project.total_seconds_limit > 0
@@ -41,7 +45,12 @@ export const ProjectList = ({ onLogTimeClick, onEditClick }: ProjectListProps) =
           >
             <div className="flex-1 flex justify-between">
               <div className="pr-18">
-                <h3 className="text-xl font-bold text-gray-800">{project.name}</h3>
+                <span className={`inline-block text-xs font-bold mb-1 ${
+                  isFinished
+                    ? 'text-red-600'
+                    : 'text-green-600'
+                }`}>{project.status}</span>
+                <h3 className="text-xl font-bold text-gray-800">{project.name}</h3>               
                 <span className="text-sm font-medium text-gray-600">{project.clients?.name}</span>
               </div>
 
@@ -137,7 +146,8 @@ export const ProjectList = ({ onLogTimeClick, onEditClick }: ProjectListProps) =
 
             <button
               onClick={() => onLogTimeClick(project.id)}
-              className="cursor-pointer mt-6 w-full py-2 px-4 bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+              className="cursor-pointer mt-6 w-full py-2 px-4 bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 disabled:pointer-events-none disabled:opacity-50"
+              disabled={isFinished}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +163,7 @@ export const ProjectList = ({ onLogTimeClick, onEditClick }: ProjectListProps) =
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
-              Add a new task
+              {isFinished ? 'Project is finished' : 'Add a new task'}
             </button>
           </div>
         )

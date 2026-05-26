@@ -9,23 +9,43 @@ export const ProjectsPage = () => {
   const [taskLogProjectId, setTaskLogProjectId] = useState<string | null>(null)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
 
+  const [showFinished, setShowFinished] = useState(false)
+
   return (
     <main className="container mx-auto py-10 px-4">
-      <header className="flex justify-between items-center flex-wrap gap-x-6 gap-y-3 mb-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 pb-1">Projects</h1>
-          <p className="text-gray-500">Projects and hours management.</p>
+      <header className="mb-6">
+        <div className="flex justify-between items-center flex-wrap gap-x-6 gap-y-3">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 pb-1">Projects</h1>
+            <p className="text-gray-500">Projects and hours management.</p>
+          </div>
+
+          <button
+            onClick={() => setIsProjectModalOpen(true)}
+            className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            + New project
+          </button>
         </div>
 
-        <button
-          onClick={() => setIsProjectModalOpen(true)}
-          className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          + New project
-        </button>
+        <div className="flex items-center border-t border-gray-300 pt-2 mt-3">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showFinished}
+              onChange={(e) => setShowFinished(e.target.checked)}
+              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+            />
+            <span className="text-sm text-gray-600">Show finished projects</span>
+          </label>
+        </div>
       </header>
 
-      <ProjectList onLogTimeClick={(id) => setTaskLogProjectId(id)} onEditClick={(project) => setEditingProject(project)} />
+      <ProjectList
+        showFinished={showFinished}
+        onLogTimeClick={(id) => setTaskLogProjectId(id)}
+        onEditClick={(project) => setEditingProject(project)}
+      />
 
       {taskLogProjectId && (
         <div
@@ -74,6 +94,7 @@ export const ProjectsPage = () => {
                 name: editingProject.name,
                 client_id: editingProject.clients?.id || '',
                 total_hours_limit: editingProject.total_seconds_limit / 3600,
+                status: editingProject.status,
               }}
               onSuccess={() => setEditingProject(null)}
               onCancel={() => setEditingProject(null)}
