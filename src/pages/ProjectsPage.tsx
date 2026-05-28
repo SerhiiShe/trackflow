@@ -3,8 +3,15 @@ import { ProjectList } from '../features/projects/components/ProjectList'
 import { ProjectForm } from '../features/projects/components/ProjectForm'
 import { TaskForm } from '../features/tasks/components/TaskForm'
 import type { Project } from '../features/projects/types'
+import { useProfiles } from '../features/profiles/hooks/useProfiles'
+import { useAuthStore } from '../features/auth/store/authStore'
 
 export const ProjectsPage = () => {
+  const { user } = useAuthStore()
+  const { data: profiles } = useProfiles()
+  const currentProfile = profiles?.find(p => p.id === user?.id)
+  const isEmployee = currentProfile?.role === 'employee'
+
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)
   const [taskLogProjectId, setTaskLogProjectId] = useState<string | null>(null)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
@@ -20,12 +27,14 @@ export const ProjectsPage = () => {
             <p className="text-gray-500">Projects and hours management.</p>
           </div>
 
+          {isEmployee && (
           <button
             onClick={() => setIsProjectModalOpen(true)}
             className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             + New project
           </button>
+          )}
         </div>
 
         <div className="flex items-center border-t border-gray-300 pt-2 mt-3">
@@ -45,6 +54,7 @@ export const ProjectsPage = () => {
         showFinished={showFinished}
         onLogTimeClick={(id) => setTaskLogProjectId(id)}
         onEditClick={(project) => setEditingProject(project)}
+        isEmployee={isEmployee}
       />
 
       {taskLogProjectId && (

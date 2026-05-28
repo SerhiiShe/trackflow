@@ -46,6 +46,10 @@ export const TaskForm = ({
 
   const isEditMode = !!taskId
 
+  const profilesForSelect = profiles?.filter((p) =>
+    p.role === 'employee'
+  )
+
   const today = new Date().toISOString().split('T')[0]
 
   const {
@@ -80,7 +84,7 @@ export const TaskForm = ({
           className="w-full p-2 border rounded bg-white"
           disabled={isLoadingProfiles}
         >
-          {profiles?.map((profile) => (
+          {profilesForSelect?.map((profile) => (
             <option key={profile.id} value={profile.id}>
               {profile.full_name || profile.email}
             </option>

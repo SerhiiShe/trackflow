@@ -4,6 +4,7 @@ import { useProfiles } from '../../profiles/hooks/useProfiles'
 import { useProjects } from '../../projects/hooks/useProjects'
 import type { Project } from '../../projects/types'
 import type { TaskFilters } from '../types'
+import { useAuthStore } from '../../auth/store/authStore'
 
 interface TaskFiltersPanelProps {
   filters: Omit<TaskFilters, 'pageParam'>
@@ -15,11 +16,19 @@ export const TaskFiltersPanel = ({ filters, onChange, onProjectChange }: TaskFil
   const { data: projects } = useProjects()
   const { data: clients } = useClients()
   const { data: profiles } = useProfiles()
+  const { user } = useAuthStore()
+
+    const currentProfile = profiles?.find((p) => p.id === user?.id)
+    const isEmployee = currentProfile?.role === 'employee'
 
   const [showFinishedProjects, setShowFinishedProjects] = useState(false)
 
   const projectsForSelect = projects?.filter((p) =>
-    showFinishedProjects ? true : p.status !== 'Finished',
+    showFinishedProjects ? true : p.status !== 'Finished'
+  )
+
+  const profilesForSelect = profiles?.filter((p) =>
+    p.role === 'employee'
   )
 
   const handleChange = (key: keyof typeof filters, value: string) => {
@@ -51,9 +60,10 @@ export const TaskFiltersPanel = ({ filters, onChange, onProjectChange }: TaskFil
           <select
             value={filters.clientId || 'all'}
             onChange={(e) => handleChange('clientId', e.target.value)}
-            className="w-full p-2 text-sm border rounded bg-gray-50"
+            disabled={!isEmployee}
+            className="w-full p-2 text-sm border rounded bg-gray-50 disabled:opacity-40"
           >
-            <option value="all">All clients</option>
+            <option value="all">{isEmployee ? 'All clients' : currentProfile?.full_name}</option>
             {clients?.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -86,7 +96,7 @@ export const TaskFiltersPanel = ({ filters, onChange, onProjectChange }: TaskFil
             className="w-full p-2 text-sm border rounded bg-gray-50"
           >
             <option value="all">All users</option>
-            {profiles?.map((p) => (
+            {profilesForSelect?.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.full_name}
               </option>

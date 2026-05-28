@@ -10,6 +10,8 @@ export const Navbar = () => {
   const { data: profiles } = useProfiles()
   const currentProfile = profiles?.find((p) => p.id === user?.id)
 
+  const isEmployee = currentProfile?.role === 'employee'
+
   const initials = currentProfile?.full_name
     ? currentProfile.full_name.substring(0, 2).toUpperCase()
     : currentProfile?.email.substring(0, 2).toUpperCase()
@@ -37,12 +39,14 @@ export const Navbar = () => {
               Task history
             </Link>
 
-            <Link
-              to="/clients"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === '/clients' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
-            >
-              Clients
-            </Link>
+            {isEmployee && (
+              <Link
+                to="/clients"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === '/clients' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
+              >
+                Clients
+              </Link>
+            )}
           </div>
         </div>
 

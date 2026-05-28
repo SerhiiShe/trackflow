@@ -1,3 +1,5 @@
+import { useAuthStore } from '../../auth/store/authStore'
+import { useProfiles } from '../../profiles/hooks/useProfiles'
 import { useDeleteTask } from '../hooks/useDeleteTask'
 import type { TaskLog } from '../types'
 import { TaskHistoryTableRow } from './TaskHistoryTableRow'
@@ -9,8 +11,18 @@ interface TaskHistoryTableProps {
   onEditClick: (task: TaskLog) => void
 }
 
-export const TaskHistoryTable = ({ tasks, error, isLoading, onEditClick }: TaskHistoryTableProps) => {
+export const TaskHistoryTable = ({
+  tasks,
+  error,
+  isLoading,
+  onEditClick,
+}: TaskHistoryTableProps) => {
   const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask()
+
+  const { user } = useAuthStore()
+  const { data: profiles } = useProfiles()
+  const currentProfile = profiles?.find((p) => p.id === user?.id)
+  const isEmployee = currentProfile?.role === 'employee'
 
   const handleDelete = (taskId: string) => {
     if (
@@ -38,12 +50,21 @@ export const TaskHistoryTable = ({ tasks, error, isLoading, onEditClick }: TaskH
             <th className="px-6 py-4">Assignee</th>
             <th className="px-6 py-4">Description</th>
             <th className="px-6 py-4 text-right">Time spent</th>
-            <th className="px-6 py-4 text-right">Actions</th>
+            {isEmployee && (
+              <th className="px-6 py-4 text-right">Actions</th>
+            )}
           </tr>
         </thead>
         <tbody>
           {tasks.map((task) => (
-            <TaskHistoryTableRow key={task.id} task={task} onDeleteClick={(taskId) => handleDelete(taskId)} isDeleting={isDeleting} onEditClick={() => onEditClick(task)} />
+            <TaskHistoryTableRow
+              key={task.id}
+              task={task}
+              onDeleteClick={(taskId) => handleDelete(taskId)}
+              isDeleting={isDeleting}
+              onEditClick={() => onEditClick(task)}
+              isEmployee={isEmployee}
+            />
           ))}
         </tbody>
       </table>

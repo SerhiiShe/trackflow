@@ -10,6 +10,7 @@ import { AuthPage } from '../pages/AuthPage'
 import { ProtectedRoute } from './router/ProtectedRoute'
 import { AuthRoute } from './router/AuthRoute'
 import { ClientsPage } from '../pages/ClientsPage'
+import { EmployeeRoute } from './router/EmployeeRoute'
 
 const queryClient = new QueryClient()
 
@@ -50,7 +51,9 @@ export const App = () => {
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<ProjectsPage />} />
               <Route path="/history" element={<TaskHistoryPage />} />
-              <Route path="/clients" element={<ClientsPage />} />
+              <Route element={<EmployeeRoute />}>
+                <Route path="/clients" element={<ClientsPage />} />
+              </Route>
             </Route>
           </Routes>
         </div>
