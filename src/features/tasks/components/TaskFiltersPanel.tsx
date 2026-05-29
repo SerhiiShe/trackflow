@@ -58,12 +58,12 @@ export const TaskFiltersPanel = ({ filters, onChange, onProjectChange }: TaskFil
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Client</label>
           <select
-            value={filters.clientId || 'all'}
+            value={isEmployee ? (filters.clientId || 'all') : (currentProfile?.client_id || 'all')}
             onChange={(e) => handleChange('clientId', e.target.value)}
             disabled={!isEmployee}
             className="w-full p-2 text-sm border rounded bg-gray-50 disabled:opacity-40"
           >
-            <option value="all">{isEmployee ? 'All clients' : currentProfile?.full_name}</option>
+            <option value="all">All clients</option>
             {clients?.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
