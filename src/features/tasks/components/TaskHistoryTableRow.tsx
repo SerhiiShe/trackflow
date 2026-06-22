@@ -17,7 +17,7 @@ export const TaskHistoryTableRow = ({
   isEmployee,
 }: TaskHistoryTableRowProps) => {
   return (
-    <tr key={task.id} className="bg-white border-b hover:bg-gray-50">
+    <tr key={task.id} className="bg-white border-b border-gray-300 hover:bg-gray-50">
       <td className="px-6 py-4 whitespace-nowrap">
         {new Date(task.date).toLocaleDateString('de-CH', {
           day: '2-digit',
