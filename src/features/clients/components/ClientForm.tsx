@@ -14,7 +14,7 @@ type ClientFormValues = z.infer<typeof clientSchema>
 interface ClientFormProps {
   clientId?: string
   initialData?: CreateClientInput
-  onSuccess: () => void
+  onSuccess: (newClient?: any) => void
   onCancel: () => void
 }
 

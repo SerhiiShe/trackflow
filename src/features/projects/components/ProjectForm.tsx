@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useClients } from '../../clients/hooks/useClients'
 import type { CreateProjectInput } from '../types'
 import { useUpdateProject } from '../hooks/useUpdateProject'
+import { useState } from 'react'
+import { ClientForm } from '../../clients/components/ClientForm'
 
 const projectSchema = z.object({
   name: z.string().min(2, 'The name must be at least 2 characters long'),
@@ -27,11 +29,14 @@ export const ProjectForm = ({ projectId, initialData, onSuccess, onCancel }: Pro
   const { mutate: updateProject, isPending: isUpdating } = useUpdateProject(onSuccess)
   const { data: clients, isLoading: isLoadingClients } = useClients()
 
+  const [isClientModalOpen, setIsClientModalOpen] = useState(false)
+
   const isEditMode = !!projectId
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -43,6 +48,18 @@ export const ProjectForm = ({ projectId, initialData, onSuccess, onCancel }: Pro
     },
   })
 
+  const handleClientCreated = (newClient: any) => {
+    setIsClientModalOpen(false)
+    if (newClient) {
+      setTimeout(() => {
+      setValue('client_id', newClient.id, {
+        shouldValidate: true,
+        shouldDirty: true,
+      })
+    }, 100)
+    }
+  }
+
   const onSubmit = (data: ProjectFormValues) => {
     if (isEditMode) {
       updateProject({ projectId, data })
@@ -52,78 +69,100 @@ export const ProjectForm = ({ projectId, initialData, onSuccess, onCancel }: Pro
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Project name</label>
-        <input
-          {...register('name')}
-          className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Page layout"
-        />
-        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
-      </div>
+    <div className="relative">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Project name</label>
+          <input
+            {...register('name')}
+            className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Page layout"
+          />
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Client</label>
-        <select
-          {...register('client_id')}
-          className="w-full p-2 border rounded bg-white"
-          disabled={isLoadingClients}
-        >
-          <option value="">Select a client...</option>
-          {clients?.map((client) => (
-            <option key={client.id} value={client.id}>
-              {client.name}
-            </option>
-          ))}
-        </select>
-        {errors.client_id && (
-          <p className="text-red-500 text-sm mt-1">{errors.client_id.message}</p>
-        )}
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Client</label>
+          <div className="flex gap-2">
+            <select
+              {...register('client_id')}
+              className="w-full p-2 border rounded bg-white"
+              disabled={isLoadingClients}
+            >
+              <option value="">Select a client...</option>
+              {clients?.map((client) => (
+                <option key={client.id} value={client.id}>
+                  {client.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => setIsClientModalOpen(true)}
+              className="cursor-pointer px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+              title="Add a new client"
+            >
+              +
+            </button>
+          </div>
+          {errors.client_id && (
+            <p className="text-red-500 text-sm mt-1">{errors.client_id.message}</p>
+          )}
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-        <select
-          {...register('status')}
-          className="w-full p-2 border rounded bg-white"
-        >
-          <option value="Ongoing">Ongoing</option>
-          <option value="Finished">Finished</option>
-        </select>
-        {errors.status && (
-          <p className="text-red-500 text-sm mt-1">{errors.status.message}</p>
-        )}
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <select {...register('status')} className="w-full p-2 border rounded bg-white">
+            <option value="Ongoing">Ongoing</option>
+            <option value="Finished">Finished</option>
+          </select>
+          {errors.status && <p className="text-red-500 text-sm mt-1">{errors.status.message}</p>}
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Hours</label>
-        <input
-          {...register('total_hours_limit', { valueAsNumber: true })}
-          className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-          placeholder="10"
-        />
-        {errors.total_hours_limit && (
-          <p className="text-red-500 text-sm mt-1">{errors.total_hours_limit.message}</p>
-        )}
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Hours</label>
+          <input
+            {...register('total_hours_limit', { valueAsNumber: true })}
+            className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+            placeholder="10"
+          />
+          {errors.total_hours_limit && (
+            <p className="text-red-500 text-sm mt-1">{errors.total_hours_limit.message}</p>
+          )}
+        </div>
 
-      <div className="flex justify-end space-x-3 pt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+        <div className="flex justify-end space-x-3 pt-4">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isCreating || isUpdating}
+            className="cursor-pointer px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isCreating || isUpdating ? 'Please wait...' : 'Save'}
+          </button>
+        </div>
+      </form>
+
+      {isClientModalOpen && (
+        <div 
+          onMouseDown={(e) => e.target === e.currentTarget && setIsClientModalOpen(false)}
+          className="fixed inset-0 z-60 bg-black/60 flex items-center justify-center p-4"
         >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={isCreating || isUpdating}
-          className="cursor-pointer px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
-        >
-          {isCreating || isUpdating ? 'Please wait...' : 'Save'}
-        </button>
-      </div>
-    </form>
+          <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6">
+            <h3 className="text-lg font-bold mb-4">Add a new client</h3>
+            <ClientForm
+              onSuccess={handleClientCreated} 
+              onCancel={() => setIsClientModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
