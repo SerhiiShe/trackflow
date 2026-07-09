@@ -116,7 +116,7 @@ export const TaskHistoryPage = () => {
 
             <TaskForm
               projectId={editingTask.project_id}
-              taskId={editingTask.id}
+              task={editingTask}
               initialData={{
                 project_id: editingTask.project_id,
                 user_id: editingTask.user_id,

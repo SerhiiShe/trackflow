@@ -158,7 +158,7 @@ export const ProjectsPage = () => {
             <h2 className="text-lg font-bold mb-4">Edit the project</h2>
 
             <ProjectForm
-              projectId={editingProject.id}
+              project={editingProject}
               initialData={{
                 name: editingProject.name,
                 client_id: editingProject.clients?.id || '',

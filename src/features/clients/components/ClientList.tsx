@@ -120,6 +120,7 @@ export const ClientList = ({ viewMode, onEditClick }: ClientListProps) => {
     )
   }
 
+  // Grid view
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {clients?.map((client) => {

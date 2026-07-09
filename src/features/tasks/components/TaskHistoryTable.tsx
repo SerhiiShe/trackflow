@@ -1,6 +1,5 @@
 import { useAuthStore } from '../../auth/store/authStore'
 import { useProfiles } from '../../profiles/hooks/useProfiles'
-import { useDeleteTask } from '../hooks/useDeleteTask'
 import type { TaskLog } from '../types'
 import { TaskHistoryTableRow } from './TaskHistoryTableRow'
 
@@ -17,22 +16,11 @@ export const TaskHistoryTable = ({
   isLoading,
   onEditClick,
 }: TaskHistoryTableProps) => {
-  const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask()
 
   const { user } = useAuthStore()
   const { data: profiles } = useProfiles()
   const currentProfile = profiles?.find((p) => p.id === user?.id)
   const isEmployee = currentProfile?.role === 'employee'
-
-  const handleDelete = (taskId: string) => {
-    if (
-      window.confirm(
-        'Are you sure you want to delete this entry? The time will be returned to the project.',
-      )
-    ) {
-      deleteTask(taskId)
-    }
-  }
 
   if (isLoading) return <div className="p-4">Loading...</div>
   if (error) return <div className="p-4 text-red-500">{(error as Error).message}</div>
@@ -60,8 +48,6 @@ export const TaskHistoryTable = ({
             <TaskHistoryTableRow
               key={task.id}
               task={task}
-              onDeleteClick={(taskId) => handleDelete(taskId)}
-              isDeleting={isDeleting}
               onEditClick={() => onEditClick(task)}
               isEmployee={isEmployee}
             />
