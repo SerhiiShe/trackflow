@@ -1,4 +1,6 @@
 import { supabase } from '../../../lib/supabaseClient'
+import { sendGoogleChatNotification } from '../../../utils/notifications'
+import { formatSeconds } from '../../../utils/timeFormat'
 import type { CreateTaskInput, TaskFilters, TaskLog } from '../../tasks/types'
 
 const PAGE_SIZE = 20
@@ -72,6 +74,19 @@ export const logTask = async (input: CreateTaskInput) => {
     .single()
 
   if (error) throw new Error(error.message)
+
+  // Send a notification to Google Chat about the new task log
+  if (data) {
+    const userName = data.profiles?.full_name || data.profiles?.email || 'Employee'
+    const projectName = data.projects?.name || 'Unknown project'
+    const timeSpent = formatSeconds(totalSeconds)
+
+    const message = `⏱ *${userName}* just logged *${timeSpent}* on project *${projectName}*.\nTask: _${input.title}_`
+
+    // Without await so that the frontend doesn't wait for a response from Google.
+    sendGoogleChatNotification(message)
+  }
+
   return data
 }
 
@@ -109,7 +124,6 @@ export const exportTaskLogs = async ({
   userId,
   sortBy = 'date_desc',
 }: Omit<TaskFilters, 'pageParam'>) => {
-
   let query = supabase
     .from('task_logs')
     .select('*, projects!inner(name, client_id, clients(name)), profiles(full_name, email)')
