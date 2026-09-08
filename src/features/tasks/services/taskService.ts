@@ -83,8 +83,7 @@ export const logTask = async (input: CreateTaskInput) => {
 
     const message = `⏱ *${userName}* just logged *${timeSpent}* on project *${projectName}*.\nTask: _${input.title}_`
 
-    // Without await so that the frontend doesn't wait for a response from Google.
-    sendGoogleChatNotification(message)
+    await sendGoogleChatNotification(message)
   }
 
   return data
