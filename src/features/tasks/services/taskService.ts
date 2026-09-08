@@ -77,8 +77,20 @@ export const logTask = async (input: CreateTaskInput) => {
 
   // Send a notification to Google Chat about the new task log
   if (data) {
-    const userName = data.profiles?.full_name || data.profiles?.email || 'Employee'
-    const projectName = data.projects?.name || 'Unknown project'
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name, email')
+      .eq('id', input.user_id)
+      .single()
+
+    const { data: project } = await supabase
+      .from('projects')
+      .select('name')
+      .eq('id', input.project_id)
+      .single()
+
+    const userName = profile?.full_name || profile?.email || 'Employee'
+    const projectName = project?.name || 'Unknown project'
     const timeSpent = formatSeconds(totalSeconds)
 
     const message = `⏱ *${userName}* just logged *${timeSpent}* on project *${projectName}*.\nTask: _${input.title}_`
