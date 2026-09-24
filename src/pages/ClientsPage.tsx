@@ -113,7 +113,7 @@ export const ClientsPage = () => {
             <h2 className="text-lg font-bold mb-4">Edit the client</h2>
 
             <ClientForm
-              clientId={editingClient.id}
+              client={editingClient}
               initialData={{
                 name: editingClient.name,
               }}
