@@ -22,7 +22,21 @@ export const Navbar = () => {
     <nav className="bg-white border-b border-gray-200">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between flex-wrap gap-x-8 gap-y-2">
         <div className="flex items-center gap-x-6 gap-y-4 flex-wrap">
-          <div className="font-bold text-xl text-blue-600 mr-4 italic">trackflow</div>
+          {/* <div className="font-bold text-xl text-blue-600 mr-4 italic">trackflow</div> */}
+          <div className="flex items-start">
+            <img
+              src="https://cdn.prod.website-files.com/62cc427c7c9d4b6e0ef8fcfc/6a1826e697f7299d29f98b4c_logo_destinazio_black.svg"
+              alt="destinazio."
+              className="h-[24px] w-auto"
+            />
+            <span
+              className="relative ml-0.5 -mt-2.5 text-[18px] leading-none text-[#061012]"
+              style={{ fontFamily: 'Brown, Tahoma, sans-serif' }}
+            >
+              <span className="absolute inset-x-[-1px] bottom-[-1px] h-[45%] bg-[#FBEB43]" />
+              <span className="relative">Trackflow</span>
+            </span>
+          </div>
 
           <div className="flex gap-2">
             <Link
